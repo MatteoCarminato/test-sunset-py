@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: sunset-app-laravel
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+  db:
+    container_name: sunset-db-postgres
+    image: 'postgres:14'
+    ports:
+      - "5455:5432"
+    environment:
+        POSTGRES_DB: '${DB_DATABASE}'
+        POSTGRES_USER: '${DB_USERNAME}'
+        POSTGRES_PASSWORD: '${DB_PASSWORD}'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+        test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
+        retries: 3
+        timeout: 5s
+  
+volumes:
+  db_data:
