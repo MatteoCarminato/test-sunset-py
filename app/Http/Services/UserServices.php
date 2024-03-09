@@ -3,22 +3,30 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\UserRepository;
+use App\Http\Repositories\WalletRepository;
 use Illuminate\Support\Facades\DB;
 
 
 class UserServices
 {
     protected $userRepository;
-    public function __construct(UserRepository $userRepository)
+    protected $walletRepository;
+
+    public function __construct(UserRepository $userRepository, WalletRepository $walletRepository)
     {
         $this->userRepository = $userRepository;
+        $this->walletRepository = $walletRepository;
     }
     public function createUser($payload)
     {
         return DB::transaction(function () use ($payload) {
             try {
+
                 $userCreated = $this->userRepository->store($payload);
-                //cadastrou o usuario, cria uma carteira pra ele
+                $wallet['user_id'] = $userCreated->id;
+                $wallet['amount'] = $payload['amount'];
+
+                $this->walletRepository->store($wallet);
                 
             } catch (\Exception $e) {
                 return response()->json([

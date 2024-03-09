@@ -1,17 +1,17 @@
 <?php
 
 namespace App\Http\Repositories;
-use App\Models\User;
+use App\Models\Wallet;
 
 
-class UserRepository
+class WalletRepository
 {
   private $model;
-  public function __construct(User $model) {
+  public function __construct(Wallet $model) {
     $this->model = $model;
   }
 
-  public function store($data): User
+  public function store($data): Wallet
   {
     return $this->model->create($data);
   }
