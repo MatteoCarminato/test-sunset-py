@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Services\TransactionServices;
-use App\Models\Transaction;
-use App\Models\User;
-use Illuminate\Http\Request;
-
 class TransactionController extends Controller
 {
     private $transactionServices;

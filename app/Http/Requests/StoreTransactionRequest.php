@@ -26,7 +26,7 @@ class StoreTransactionRequest extends FormRequest
         return [
             'type' => 'required|in:credit,debit',
             'value' => 'required|numeric|min:0.01',
-            'id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id'
         ];
     }
 
