@@ -10,6 +10,6 @@ class TransactionServices
   public function createTransaction($payload)
   {
     StoreTransaction::dispatch($payload['type'], $payload['value'], $payload['user_id']);
-    return response()->json(['message' => 'Job dispatched successfully']);
+    return response()->json(['message' => 'Transação em andamento']);
   }
 }

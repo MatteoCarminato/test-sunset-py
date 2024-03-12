@@ -22,11 +22,16 @@ class UserServices
         return DB::transaction(function () use ($payload) {
             try {
 
-                $userCreated = $this->userRepository->store($payload);
-                $wallet['user_id'] = $userCreated->id;
+                $user_created = $this->userRepository->store($payload);
+                $wallet['user_id'] = $user_created->id;
                 $wallet['amount'] = $payload['amount'];
 
-                $this->walletRepository->store($wallet);
+                $wallet_created = $this->walletRepository->store($wallet);
+
+                return response()->json([
+                  'user_id' => $user_created->id,
+                  'wallet' => $wallet_created->amount
+              ], 201);
                 
             } catch (\Exception $e) {
                 return response()->json([

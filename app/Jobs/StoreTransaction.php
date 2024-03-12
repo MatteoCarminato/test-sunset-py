@@ -33,7 +33,7 @@ class StoreTransaction implements ShouldQueue
    */
   public function handle(): void
   {
-    \Log::info('Something is being processed...');
+    \Log::info('Começando a transação...');
     $transaction = new Transaction();
 
 
@@ -41,7 +41,6 @@ class StoreTransaction implements ShouldQueue
       $transaction->type = $this->type;
       $transaction->value = $this->value;
       $transaction->user_id = $this->user_id;
-      $transaction->type = 'credit';
       $transaction->save();
 
       if ($this->type == 'credit') {
@@ -53,11 +52,11 @@ class StoreTransaction implements ShouldQueue
           Cache::put('wallet_' . $this->user_id . '_key', $wallet_user, 60);
         } else {
           $wallet = Wallet::where('user_id', $this->user_id)->first();
-          $wallet_amount = $wallet->amount + $transaction->value;
+          $wallet->amount = $wallet->amount + $transaction->value;
           $wallet->save();
           Cache::put('wallet_' . $this->user_id . '_key', $wallet, 60);
         }
-      } else {
+      } else if ($this->type == 'debit') {
         //Atualiza a carteira - débito
         if (Cache::has('wallet_' . $this->user_id . '_key')) {
           $wallet_user = Cache::get('wallet_' . $this->user_id . '_key');
