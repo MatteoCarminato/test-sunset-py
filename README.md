@@ -1,66 +1,102 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Teste para Avaliação de Desenvolvedor Sênior: Sistema financeiro
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Descrição do Teste
 
-## About Laravel
+**Objetivo:** Desenvolver um sistema financeiro simplificado capaz de processar operações de crédito e débito
+## Requisitos Funcionais
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. **Criação de Conta:** Permitir a criação de conta com id,nome e saldo atual.
+- Nessa etapa foi criado somente um endpoint simples para cadastro de pessoa
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```sh
+POST
+http://127.0.0.1:8000/api/users
+```
+```sh
+Payload:
+{
+    "name":"Sunset Client",
+    "amount": "40"
+}
+```
+Com isso é criado um usuario simples e com o valor em sua carteira.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. **Operações de Crédito e Débito:** Suportar operações de crédito (depósitos) e débito (retiradas), atualizando o saldo das contas.
+- Nessa etapa foi criado somente um endpoint simples para as transações
 
-## Learning Laravel
+```sh
+POST
+http://127.0.0.1:8000/api/transaction
+```
+```sh
+Payload:
+{
+    "type":"credit", // "debit"
+    "value": 10,
+    "user_id": 1
+}
+```
+- Nessa etapa temos o tipo da transação, valor e para qual usuario vamos fazer a movimentação na carteira.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. **Concorrência:** Garantir a capacidade de processar até 100 transações por segundo, mantendo a consistência dos dados.
+- Para a questão da concorrência, foi criado um Job para aceitar todas as requisições, então conforme a transação é recebida é colocada em um Job. Além disso foi colocado tbm um Cache para evitar varias consultas ao mesmo Usuario, assim evitamos consulta desnecessaria e sobre carregar o banco de dados.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+4. **Histórico de Transações:** Manter um histórico das operações realizadas para cada conta.
+- Todas as transações tem o histórico, o que muda é somente a Wallet da pessoa, ela sempre é atualizada conforme a transação.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+5. O saldo da conta não pode ser negativo.
+- Temos uma verificação para o mesmo, evitando que a pessoa fique com saldo negativo.
 
-## Laravel Sponsors
+## Requisitos Não Funcionais
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Performance:** Otimizar o sistema para alta carga de transações sem perda significativa de desempenho.
+- Utilização de Filas e Cache.
 
-### Premium Partners
+2. **Segurança:** Implementar medidas de segurança para proteção das informações e transações.
+- Por ser uma aplicação simples não foi implementado, mas poderiamos ter no endpoint uma Secret para o endpoint, evitando que consigam fazer transações sem ela.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+3. **Testes:** Incluir testes unitários e de integração que cubram funcionalidades chave.
+-
 
-## Contributing
+4. **Documentação:** Fornecer documentação incluindo instruções de uso e exemplos de requisições para operações.
+ - Documentação essa do Readme.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Entrega de Dados
 
-## Code of Conduct
+- **Banco de Dados:** Fornecer SQL da aplicação ou usar ORM para gestão do banco de dados.
+- **Esquema do Banco de Dados:** Incluir esquema do banco de dados na documentação.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+> Colocado um up.sh que fara tudo de forma automatica para instalação e utilização do sistema e banco de dados.
 
-## Security Vulnerabilities
+## Tecnologias
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Back-end:** Utilizar PHP ou Node.js.
+> Utilizado: Laravel 10
+- **Banco de Dados:** Escolha livre, com justificativa na documentação.
+> Utilizado: Postgres
 
-## License
+## Critérios de Avaliação
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Arquitetura do Sistema:** Clareza e eficiência na arquitetura.
+- **Qualidade do Código:** Legibilidade, manutenção, e boas práticas.
+- **Performance:** Capacidade de suportar a carga de transações proposta.
+- **Segurança:** Eficácia das medidas de segurança.
+- **Cobertura de Testes:** Qualidade e abrangência dos testes.
+- **Documentação:** Clareza e completude da documentação.
+
+## Entrega do Teste
+
+- O teste deve ser submetido em um repositório Git contendo código fonte, testes, e documentação.
+- Deve incluir instruções para instalação, execução do sistema, e exemplos de operações de crédito e débito.
+
+---
+Video para instalação do projeto:
+
+
+Video rodando os endpoints:
+
+
+## Arquitetura utilizada
+- No projeto foi utilizado uma pequena parte no cadastro de usuario, utilizando o Service Repository Pattern. Com isso conseguimos deixar o código mais legivel, além de conseguirmos reaproveitamento de código.
+- A utilização de Cache e Job é para o sistema ficar mais eficiente e não forçar a utilização de banco de dados desnecessariamente.
+- Não foi colocado nenhum função tão complexa atendendo o que foi solicitado.
