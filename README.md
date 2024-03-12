@@ -94,6 +94,8 @@ Video para instalação do projeto:
 [Gravação de tela de 11-03-2024 20:58:25.webm](https://github.com/MatteoCarminato/test-sunset-py/assets/23380739/3139bcb4-c4c8-4a9f-975d-3afe9da9b195)
 
 Video rodando os endpoints:
+[Gravação de tela de 11-03-2024 23:17:26.webm](https://github.com/MatteoCarminato/test-sunset-py/assets/23380739/7613d03a-c696-4ddd-8403-74b3d5b05809)
+
 
 
 ## Arquitetura utilizada
