@@ -11,22 +11,11 @@ services:
     volumes:
       - .:/var/www/html
     depends_on:
-      - db
-  db:
-    container_name: sunset-db-postgres
-    image: 'postgres:14'
+      - postgres
+  postgres:
+    image: postgres
+    container_name: sunset-postgres
+    environment:
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
     ports:
       - "5455:5432"
-    environment:
-        POSTGRES_DB: '${DB_DATABASE}'
-        POSTGRES_USER: '${DB_USERNAME}'
-        POSTGRES_PASSWORD: '${DB_PASSWORD}'
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    healthcheck:
-        test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
-        retries: 3
-        timeout: 5s
-  
-volumes:
-  db_data:

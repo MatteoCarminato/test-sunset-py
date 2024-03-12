@@ -30,8 +30,10 @@ RUN composer install
 
 # Dar permissões de escrita no diretório de logs
 RUN chown -R www-data:www-data /var/www/html/storage
+RUN chown -R www-data:www-data /var/www/html/database
 
 RUN chmod -R 777 /var/www/html/storage
+RUN chmod -R 777 /var/www/html/database
 
 # Expõe a porta 80 do container
 EXPOSE 80
